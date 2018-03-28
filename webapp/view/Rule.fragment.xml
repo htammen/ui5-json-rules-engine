@@ -1,0 +1,12 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Popover
+		title="{ruleModel>/title}"
+		class="sapUiContentPadding"
+		placement="Bottom"
+		initialFocus="ruleTextArea">
+		<TextArea value="{path: 'ruleModel>/rule', formatter: '._formatRule'}" valueLiveUpdate="true" id="ruleTextArea" 
+						rows="10" cols="70" editable="false"/>
+	</Popover>
+</core:FragmentDefinition>

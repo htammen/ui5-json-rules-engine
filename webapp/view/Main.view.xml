@@ -1,0 +1,75 @@
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="de.tammenit.sap.ui5.rulesenginesimplified.json-rules-engine-simplified.controller.Main"
+	displayBlock="true">
+	<App id="idAppControl">
+		<pages>
+			<sap.m.semantic:FullscreenPage xmlns:sap.m.semantic="sap.m.semantic" title="JSON Rules Prototype" id="__page0">
+				<sap.m.semantic:customFooterContent>
+					<Button xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:sap.m.semantic="sap.m.semantic"
+						text="Check" width="100px" id="__button0_copy2" tooltip="Check Allowance" press="onCheckRule"/>
+				</sap.m.semantic:customFooterContent>
+				<sap.m.semantic:content>
+					<sap.ui.layout.form:Form xmlns:sap.ui.layout.form="sap.ui.layout.form" editable="true" id="__form0">
+						<sap.ui.layout.form:formContainers>
+							<sap.ui.layout.form:FormContainer title="Are you allowed to drink beer?" id="__container0">
+								<sap.ui.layout.form:formElements>
+									<sap.ui.layout.form:FormElement label="Your Name" id="__element0" visible="false">
+										<sap.ui.layout.form:fields>
+											<Input width="100%" id="__input0" value="{modelData>/firstName}"/>
+										</sap.ui.layout.form:fields>
+									</sap.ui.layout.form:FormElement>
+									<sap.ui.layout.form:FormElement label="Your Age" id="__element1">
+										<sap.ui.layout.form:fields>
+											<Input width="100%" id="__input1" maxLength="3" required="true" value="{dataModel>/currentAge}" liveChange="onChangeAge"/>
+										</sap.ui.layout.form:fields>
+									</sap.ui.layout.form:FormElement>
+								</sap.ui.layout.form:formElements>
+							</sap.ui.layout.form:FormContainer>
+						</sap.ui.layout.form:formContainers>
+						<sap.ui.layout.form:layout>
+							<sap.ui.layout.form:ResponsiveGridLayout id="__layout0"/>
+						</sap.ui.layout.form:layout>
+					</sap.ui.layout.form:Form>
+					<TabContainer items="{ path: 'dataModel>/countries' }" id="myTabContainer" class="sapUiResponsiveContentPadding" itemSelect="onSelectCountry">
+						<items >
+							<TabContainerItem name="{dataModel>name}">
+								<content>
+									<VBox width="100%" id="__hbox0" alignItems="Center" alignContent="Center" justifyContent="Center" visible="{dataModel>/beerAllowed}">
+										<items>
+											<sap.ui.core:Icon xmlns:sap.ui.core="sap.ui.core" src="sap-icon://accept" size="4em" id="__icon0" color="green"/>
+											<Text text="Cheers" id="__text5"/>
+										</items>
+									</VBox>
+									<VBox width="100%" id="__hbox1" justifyContent="Center" alignItems="Center" visible="{= !${dataModel>/beerAllowed} }">
+										<items>
+											<sap.ui.core:Icon xmlns:sap.ui.core="sap.ui.core" src="sap-icon://decline" size="4em" id="__icon1" color="red"/>
+											<Text text="{dataModel>/beerForbiddenMessage}" id="__text6"/>
+										</items>
+									</VBox>
+									<HBox width="100%" id="__hboxProhibited" justifyContent="Center" alignItems="Center" class="sapUiSmallMargin sapUiResponsiveContentPadding">
+										<items>
+											<VBox>
+												<Link text="ruleProhibited" press="onRuleLinkPressed" id="ruleProhibitedLink"/>
+												<TextArea value="{path: 'dataModel>ruleProhibited'}" valueLiveUpdate="true" id="ruleProhibited" 
+													rows="10" cols="70" editable="{dataModel>/ruleEditMode}"/>
+											</VBox>	
+											<VBox>
+												<Link text="ruleAllowed" press="onRuleLinkPressed" id="ruleAllowedLink"/>
+												<TextArea value="{path: 'dataModel>ruleAllowed'}" valueLiveUpdate="true" id="ruleAllowed" 
+													rows="10" cols="70" editable="{dataModel>/ruleEditMode}"/>
+											</VBox>
+										</items>
+									</HBox>
+									<HBox>
+										<Button text="Edit" press="onEditRules" visible="{= !${dataModel>/ruleEditMode} }" />
+										<Button text="Save" press="onSaveRules" visible="{dataModel>/ruleEditMode}"/>
+									</HBox>
+								</content>
+							</TabContainerItem>
+						</items>
+					</TabContainer>
+				</sap.m.semantic:content>
+			</sap.m.semantic:FullscreenPage>
+		</pages>
+	</App>
+</mvc:View>
