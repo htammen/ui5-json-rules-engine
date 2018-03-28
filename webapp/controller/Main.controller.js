@@ -23,21 +23,22 @@ sap.ui.define([
 				"countries": [
 					{
 						"name": "US",
-						"ruleProhibited": '{"conditions":{"age":{"less":21}},"event":{"type":"prohibited","params":{"value":"21"}}}',
+						"ruleProhibited": '{"conditions":{"age":{"less":21}},"event":{"type":"prohibited","params":{"value":"Hey, are you insane? You have to be at least 21 years old."}}}',
 						"ruleAllowed": '{"conditions":{"age":{"greaterEq":21}},"event":{"type":"allowed"}}'
 					},
 					{
 						"name": "GER",
-						"ruleProhibited": '{"conditions":{"age":{"less":16}},"event":{"type":"prohibited","params":{"value":"16"}}}',
+						"ruleProhibited": '{"conditions":{"age":{"less":16}},"event":{"type":"prohibited","params":{"value":"Wait a litte while. Soon you will be 16 years old and then you are allowed to drink beer."}}}',
 						"ruleAllowed": '{"conditions":{"age":{"greaterEq":16}},"event":{"type":"allowed"}}'
 					},
 					{
 						"name": "SWE",
-						"ruleProhibited": '{"conditions":{"age":{"less":18}},"event":{"type":"prohibited","params":{"value":"18"}}}',
+						"ruleProhibited": '{"conditions":{"age":{"less":18}},"event":{"type":"prohibited","params":{"value":"Unfortunately our government has to decide to allow you to drink beer from 18 years on."}}}',
 						"ruleAllowed": '{"conditions":{"age":{"greaterEq":18}},"event":{"type":"allowed"}}'
 					}
 				],
-				"currentCountry": "US"
+				"currentCountry": "US",
+				"newCountry": ""
 			}), "dataModel");
 			this._formatRulesInModel(); // just format the rule strings
 			
@@ -51,6 +52,9 @@ sap.ui.define([
 		onExit : function () {
 			if (this._oPopover) {
 				this._oPopover.destroy();
+			}
+			if( this._oNewCountryPopover ) {
+				this._oNewCountryPopover.destroy();
 			}
 		},
 		
@@ -81,18 +85,18 @@ sap.ui.define([
 				value = oEvent;	
 			}
 			
+			// create the facts to which the rules are applied 
 			var facts = {
-				firstName: "Lisa",
-				lastName: "Smit",
 				age: value
 			};
+			// run the rules engine and react to the fired events
 			this._generateRuleEngine().run(facts).then(function(events) { // run() returns remove event
 				var data = this.getView().getModel("dataModel").getData();
 				events.map(function(event) {
 					switch(event.type) {
 						case "prohibited":
 							data.beerAllowed = false;
-							data.beerForbiddenMessage = "You have to be " + event.params.value + " years old.";
+							data.beerForbiddenMessage = event.params.value;
 							break;
 						case "allowed":
 							data.beerAllowed = true;
@@ -100,8 +104,6 @@ sap.ui.define([
 					}
 				} );
 				this.getView().getModel("dataModel").setData(data);
-				//events.map(event => this.getView().byId("myText").setText(`rules event ${event.type} was fired and catched in index.html`));
-				//events.map(event => console.log(`rules event ${event.type} was fired and catched in index.html`));
 			}.bind(this));
 			
 		},
@@ -143,6 +145,38 @@ sap.ui.define([
 			this._oPopover.openBy(oEvent.getSource());
 			
 		},
+
+		onAddNewCountry: function(oEvent) {
+			// create popover
+			if (!this._oNewCountryPopover) {
+				this._oNewCountryPopover = sap.ui.xmlfragment("de.tammenit.sap.ui5.rulesenginesimplified.json-rules-engine-simplified.view.NewCountry", this);
+				this.getView().addDependent(this._oNewCountryPopover);
+				this._oNewCountryPopover.bindElement("dataModel>/");
+			}
+			this._oNewCountryPopover.openBy(oEvent.getSource());
+		},
+
+		onNewCountryOk: function(oEvent) {
+			this._oNewCountryPopover.close();
+
+			var model = this.getView().getModel("dataModel");
+			var newCountry = model.getProperty("/newCountry");
+			var countries = model.getProperty("/countries");
+			
+			var oRuleProhibited = JSON.parse('{"conditions":{"age":{"less":18}},"event":{"type":"prohibited","params":{"value":"You are too young."}}}');
+			var oRuleAllowed = JSON.parse('{"conditions":{"age":{"greaterEq":18}},"event":{"type":"allowed"}}');
+			countries.push(
+				{
+					"name": newCountry,
+					"ruleProhibited": JSON.stringify(oRuleProhibited, null, '\t'),
+					"ruleAllowed": JSON.stringify(oRuleAllowed, null, '\t')
+				}
+			)
+		},
+
+		onNewCountryCancel: function(oEvent) {
+			this._oNewCountryPopover.close();
+		},
 		
 		_getCurrentCountryItemIdx: function() {
 			var currentIndex = -1;
@@ -157,10 +191,17 @@ sap.ui.define([
 			return currentIndex;
 		},
 		
+		/**
+		 * Generates and returns the rule engine instance that can be used to run against a set of facts
+		 * @returns {Object} the generated rules engine
+		 */
 		_generateRuleEngine: function() {
+			// pull the Engine object from the glocal window object
 			var Engine = window.getRulesEngine();
+			// create a RulesEngine instance
 			var ruleEngine = new Engine();
 
+			// apply current rule to the engine instance
 			var currentRules = this._getCurrentRules(0);			
 			ruleEngine.addRule(currentRules.ruleProhibited);
 			ruleEngine.addRule(currentRules.ruleAllowed);

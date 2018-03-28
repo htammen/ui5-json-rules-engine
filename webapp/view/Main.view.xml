@@ -30,7 +30,8 @@
 							<sap.ui.layout.form:ResponsiveGridLayout id="__layout0"/>
 						</sap.ui.layout.form:layout>
 					</sap.ui.layout.form:Form>
-					<TabContainer items="{ path: 'dataModel>/countries' }" id="myTabContainer" class="sapUiResponsiveContentPadding" itemSelect="onSelectCountry">
+					<TabContainer items="{ path: 'dataModel>/countries' }" id="myTabContainer" class="sapUiResponsiveContentPadding" 
+						itemSelect="onSelectCountry" showAddNewButton="true" addNewButtonPress="onAddNewCountry">
 						<items >
 							<TabContainerItem name="{dataModel>name}">
 								<content>
