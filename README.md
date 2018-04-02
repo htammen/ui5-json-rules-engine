@@ -18,7 +18,9 @@ For the sake of simplicity this demo application implements neither of the above
 It implements the business rule "Are you allowed to drink beer in country ...?". The regulations for drinking beer in general public are different from country to country. 
 - In Germany you may drink beer from 16 years on,
 - in Sweden you have to be 18 years old and
-- in the United States you have to be 21 years old.  
+- in the United States you have to be 21 years old.
+
+Find a running version of the below described Demo application [here](https://ui5-json-rules-engine-simplified.glitch.me/). 
 
 ### Your business story
 Imagine you wrote an application that shows the users if they are allowed to drink beer.  
