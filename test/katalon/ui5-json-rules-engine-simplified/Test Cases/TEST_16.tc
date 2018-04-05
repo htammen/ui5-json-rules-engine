@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description>Germany: ok
+Sweden: no
+US: no</description>
+   <name>TEST_16</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>d4502013-8f2e-4680-8ad1-eae0e36d51af</testCaseGuid>
+</TestCaseEntity>
